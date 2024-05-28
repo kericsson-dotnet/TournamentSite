@@ -1,26 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TournamentSite.Core.Entities;
 using TournamentSite.Core.Repositories;
-using TournamentSite.Data.Data;
 
 namespace TournamentSite.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GameController : ControllerBase
+    public class GameController(IUoW UoW) : ControllerBase
     {
-        private readonly IUoW _UoW;
-
-        public GameController(IUoW UoW)
-        {
-            _UoW = UoW;
-        }
+        private readonly IUoW _UoW = UoW;
 
         // GET: api/Game
         [HttpGet]

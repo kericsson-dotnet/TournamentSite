@@ -1,4 +1,3 @@
-using TournamentSite.Core.Entities;
 using TournamentSite.Data.Data;
 
 namespace TournamentSite.Api.Extensions;

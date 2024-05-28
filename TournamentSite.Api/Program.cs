@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using TournamentSite.Data.Data;
 using TournamentSite.Api.Extensions;
-using TournamentSite.Core.Repositories;
 using TournamentSite.Core.Entities;
+using TournamentSite.Core.Repositories;
+using TournamentSite.Data.Data;
 using TournamentSite.Data.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TournamentSiteContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TournamentSiteContext") ?? throw new InvalidOperationException("Connection string 'TournamentSiteContext' not found.")));

@@ -4,13 +4,9 @@ using TournamentSite.Data.Data;
 
 namespace TournamentSite.Data.Repositories;
 
-public class UoW : IUoW
+public class UoW(TournamentSiteContext context) : IUoW
 {
-    private readonly TournamentSiteContext _context;
-    public UoW(TournamentSiteContext context)
-    {
-        _context = context;
-    }
+    private readonly TournamentSiteContext _context = context;
 
     public IRepository<Tournament> TournamentRepository => new TournamentRepository(_context);
 

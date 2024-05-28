@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace TournamentSite.Core.Repositories;
 
 public interface IRepository<T>

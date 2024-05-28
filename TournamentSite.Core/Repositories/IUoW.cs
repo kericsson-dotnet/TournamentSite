@@ -1,4 +1,5 @@
 using TournamentSite.Core.Entities;
+
 namespace TournamentSite.Core.Repositories;
 
 public interface IUoW

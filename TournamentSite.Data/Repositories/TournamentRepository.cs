@@ -5,16 +5,11 @@ using TournamentSite.Data.Data;
 
 namespace TournamentSite.Data.Repositories;
 
-public class TournamentRepository : IRepository<Tournament>
+public class TournamentRepository(TournamentSiteContext context) : IRepository<Tournament>
 {
-    private readonly TournamentSiteContext _context;
+    private readonly TournamentSiteContext _context = context;
 
-    public TournamentRepository(TournamentSiteContext context)
-    {
-        _context = context;
-    }
-
-   public async Task<IEnumerable<Tournament>> GetAllAsync()
+    public async Task<IEnumerable<Tournament>> GetAllAsync()
     {
         return await _context.Tournament.Include(t => t.Games).ToListAsync();
     }

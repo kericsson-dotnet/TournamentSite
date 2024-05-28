@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using TournamentSite.Core.Entities;
 
 namespace TournamentSite.Data.Data;
@@ -15,8 +10,6 @@ public class TournamentSiteContext : DbContext
     {
     }
 
-    public DbSet<TournamentSite.Core.Entities.Tournament> Tournament { get; set; } = default!;
-    public DbSet<TournamentSite.Core.Entities.Game> Game { get; set; } = default!;
-
-
+    public DbSet<Tournament> Tournament { get; set; } = default!;
+    public DbSet<Game> Game { get; set; } = default!;
 }

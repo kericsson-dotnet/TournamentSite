@@ -9,7 +9,7 @@ public class SeedData
     {
         if (!context.Tournament.Any())
         {
-            var seedTournament = new Tournament { Title = "Tourett", StartDate = DateTime.Now };
+            var seedTournament = new Tournament { Title = "Tournament One", StartDate = DateTime.Now };
             await context.Tournament.AddAsync(seedTournament);
             await context.SaveChangesAsync();
         }
@@ -17,7 +17,7 @@ public class SeedData
 
         if (!context.Game.Any())
         {
-            var seedGame = new Game { Title = "Gamett", Time = DateTime.Now, TournamentId = 1 };
+            var seedGame = new Game { Title = "Game One", Time = DateTime.Now, TournamentId = 1 };
             await context.Game.AddAsync(seedGame);
             await context.SaveChangesAsync();
         }
