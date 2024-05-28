@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using TournamentSite.Core.Entities;
 
 namespace TournamentSite.Data.Data;
 
-    public class TournamentSiteContext : DbContext
+public class TournamentSiteContext : DbContext
+{
+    public TournamentSiteContext(DbContextOptions<TournamentSiteContext> options)
+        : base(options)
     {
-        public TournamentSiteContext (DbContextOptions<TournamentSiteContext> options)
-            : base(options)
-        {
-        }
-
-        public DbSet<TournamentSite.Core.Entities.Tournament> Tournament { get; set; } = default!;
-        public DbSet<TournamentSite.Core.Entities.Game> Game { get; set; } = default!;
     }
+
+    public DbSet<TournamentSite.Core.Entities.Tournament> Tournament { get; set; } = default!;
+    public DbSet<TournamentSite.Core.Entities.Game> Game { get; set; } = default!;
+
+
+}

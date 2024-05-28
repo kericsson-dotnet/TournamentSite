@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TournamentSite.Core.Entities;
+using TournamentSite.Core.Repositories;
+using TournamentSite.Data.Data;
 
 namespace TournamentSite.Api.Controllers
 {
@@ -13,25 +15,26 @@ namespace TournamentSite.Api.Controllers
     [ApiController]
     public class GameController : ControllerBase
     {
-        private readonly TournamentSiteContext _context;
+        private readonly IUoW _UoW;
 
-        public GameController(TournamentSiteContext context)
+        public GameController(IUoW UoW)
         {
-            _context = context;
+            _UoW = UoW;
         }
 
         // GET: api/Game
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGame()
         {
-            return await _context.Game.ToListAsync();
+            var games = await _UoW.GameRepository.GetAllAsync();
+            return Ok(games);
         }
 
         // GET: api/Game/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetGame(int id)
         {
-            var game = await _context.Game.FindAsync(id);
+            var game = await _UoW.GameRepository.GetAsync(id);
 
             if (game == null)
             {
@@ -51,15 +54,16 @@ namespace TournamentSite.Api.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(game).State = EntityState.Modified;
+            _UoW.GameRepository.Update(game);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _UoW.CompleteAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GameExists(id))
+                bool exists = await GameExists(id);
+                if (!exists)
                 {
                     return NotFound();
                 }
@@ -77,8 +81,8 @@ namespace TournamentSite.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(Game game)
         {
-            _context.Game.Add(game);
-            await _context.SaveChangesAsync();
+            _UoW.GameRepository.Add(game);
+            await _UoW.CompleteAsync();
 
             return CreatedAtAction("GetGame", new { id = game.GameId }, game);
         }
@@ -87,21 +91,21 @@ namespace TournamentSite.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(int id)
         {
-            var game = await _context.Game.FindAsync(id);
+            var game = await _UoW.GameRepository.GetAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
 
-            _context.Game.Remove(game);
-            await _context.SaveChangesAsync();
+            _UoW.GameRepository.Remove(game);
+            await _UoW.CompleteAsync();
 
             return NoContent();
         }
 
-        private bool GameExists(int id)
+        private async Task<bool> GameExists(int id)
         {
-            return _context.Game.Any(e => e.GameId == id);
+            return await _UoW.GameRepository.AnyAsync(id);
         }
     }
 }

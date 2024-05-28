@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using TournamentSite.Data.Data;
+using TournamentSite.Api.Extensions;
+using TournamentSite.Core.Repositories;
+using TournamentSite.Core.Entities;
+using TournamentSite.Data.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TournamentSiteContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TournamentSiteContext") ?? throw new InvalidOperationException("Connection string 'TournamentSiteContext' not found.")));
@@ -10,8 +13,14 @@ builder.Services.AddDbContext<TournamentSiteContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+builder.Services.AddControllers();
 
+builder.Services.AddScoped<IRepository<Tournament>, TournamentRepository>();
+builder.Services.AddScoped<IRepository<Game>, GameRepository>();
+builder.Services.AddScoped<IUoW, UoW>();
+
+var app = builder.Build();
+await app.SeedDataAsync();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -20,6 +29,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
 
 app.Run();
 
