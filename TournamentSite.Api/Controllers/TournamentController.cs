@@ -36,16 +36,16 @@ namespace TournamentSite.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TournamentDto>> GetTournament(int id)
         {
-            var tournament = await _UoW.TournamentRepository.GetAsync(id);
-
-            if (tournament == null)
+            try
             {
-                return NotFound("TournamentId not found");
+                var tournament = await _UoW.TournamentRepository.GetAsync(id);
+                var tournamentDto = _mapper.Map<TournamentDto>(tournament);
+                return Ok(tournamentDto);
             }
-
-            var tournamentDto = _mapper.Map<TournamentDto>(tournament);
-
-            return Ok(tournamentDto);
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         // PUT: api/Tournament/5

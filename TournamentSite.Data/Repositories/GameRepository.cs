@@ -16,7 +16,12 @@ public class GameRepository(TournamentSiteContext context) : IRepository<Game>
 
     public async Task<Game> GetAsync(int id)
     {
-        return await _context.Game.FirstOrDefaultAsync(g => g.GameId == id);
+        var game = await _context.Game.FirstOrDefaultAsync(g => g.GameId == id);
+        if (game == null)
+        {
+            throw new InvalidOperationException($"GameId: {id} not found");
+        }
+        return game;
     }
 
     public async Task<bool> AnyAsync(int id)

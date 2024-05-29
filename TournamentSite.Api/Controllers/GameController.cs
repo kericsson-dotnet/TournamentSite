@@ -27,16 +27,16 @@ namespace TournamentSite.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GameDto>> GetGame(int id)
         {
-            var game = await _UoW.GameRepository.GetAsync(id);
-
-            if (game == null)
+            try
             {
-                return NotFound("GameId not found");
+                var game = await _UoW.GameRepository.GetAsync(id);
+                var gameDto = _mapper.Map<GameDto>(game);
+                return Ok(gameDto);
             }
-
-            var gameDto = _mapper.Map<GameDto>(game);
-
-            return Ok(gameDto);
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         // PUT: api/Game/5
@@ -87,6 +87,7 @@ namespace TournamentSite.Api.Controllers
             {
                 return NotFound("TournamentId not found");
             }
+
             var game = _mapper.Map<Game>(gameDto);
             _UoW.GameRepository.Add(game);
 

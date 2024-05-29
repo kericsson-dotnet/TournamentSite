@@ -21,7 +21,12 @@ public class TournamentRepository(TournamentSiteContext context) : ITournamentRe
 
     public async Task<Tournament> GetAsync(int id)
     {
-        return await _context.Tournament.Include(t => t.Games).FirstOrDefaultAsync(t => t.TournamentId == id);
+        var tournament = await _context.Tournament.Include(t => t.Games).FirstOrDefaultAsync(t => t.TournamentId == id);
+        if (tournament == null)
+        {
+            throw new InvalidOperationException($"TournamentId: {id} not found");
+        }
+        return tournament;
     }
 
     public async Task<bool> AnyAsync(int id)
