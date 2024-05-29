@@ -31,7 +31,7 @@ namespace TournamentSite.Api.Controllers
 
             if (game == null)
             {
-                return NotFound();
+                return NotFound("GameId not found");
             }
 
             var gameDto = _mapper.Map<GameDto>(game);
@@ -49,7 +49,7 @@ namespace TournamentSite.Api.Controllers
 
             if (game == null)
             {
-                return NotFound();
+                return NotFound("GameId not found");
             }
 
             // Map new data to original entry
@@ -82,9 +82,22 @@ namespace TournamentSite.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<GameDto>> PostGame(GameDto gameDto)
         {
+            var tournament = await _UoW.TournamentRepository.GetAsync(gameDto.TournamentId);
+            if (tournament == null)
+            {
+                return NotFound("TournamentId not found");
+            }
             var game = _mapper.Map<Game>(gameDto);
             _UoW.GameRepository.Add(game);
-            await _UoW.CompleteAsync();
+
+            try
+            {
+                await _UoW.CompleteAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500);
+            }
 
             var resultDto = _mapper.Map<GameDto>(game);
 
@@ -98,7 +111,7 @@ namespace TournamentSite.Api.Controllers
             var game = await _UoW.GameRepository.GetAsync(id);
             if (game == null)
             {
-                return NotFound();
+                return NotFound("GameId not found");
             }
 
             _UoW.GameRepository.Remove(game);

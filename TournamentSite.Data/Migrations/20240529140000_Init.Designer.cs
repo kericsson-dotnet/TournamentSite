@@ -12,7 +12,7 @@ using TournamentSite.Data.Data;
 namespace TournamentSite.Data.Migrations
 {
     [DbContext(typeof(TournamentSiteContext))]
-    [Migration("20240529104811_Init")]
+    [Migration("20240529140000_Init")]
     partial class Init
     {
         /// <inheritdoc />
