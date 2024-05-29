@@ -28,7 +28,7 @@ namespace TournamentSite.Api.Controllers
         public async Task<ActionResult<TournamentDto>> GetTournament(int id)
         {
             var tournament = await _UoW.TournamentRepository.GetAsync(id);
-            
+
             if (tournament == null)
             {
                 return NotFound();
@@ -46,7 +46,7 @@ namespace TournamentSite.Api.Controllers
         {
             // Get previous data and object
             var tournament = await _UoW.TournamentRepository.GetAsync(id);
-            
+
             if (tournament == null)
             {
                 return NotFound();
@@ -82,10 +82,18 @@ namespace TournamentSite.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<TournamentDto>> PostTournament(TournamentDto tournamentDto)
         {
+
             var tournament = _mapper.Map<Tournament>(tournamentDto);
             _UoW.TournamentRepository.Add(tournament);
-            await _UoW.CompleteAsync();
 
+            try
+            {
+                await _UoW.CompleteAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500);
+            }
             var resultDto = _mapper.Map<TournamentDto>(tournament);
 
             return CreatedAtAction("GetTournament", new { id = tournament.TournamentId }, resultDto);

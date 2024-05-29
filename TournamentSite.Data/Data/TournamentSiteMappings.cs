@@ -12,5 +12,9 @@ public class TournamentSiteMappings: Profile
         CreateMap<TournamentDto, Tournament>();
         CreateMap<Game, GameDto>();
         CreateMap<GameDto, Game>();
+        // CreateMap<Tournament, TournamentDto>().PreserveReferences();
+        // CreateMap<TournamentDto, Tournament>().PreserveReferences();
+        // CreateMap<Game, GameDto>().PreserveReferences();
+        // CreateMap<GameDto, Game>().PreserveReferences();
     }
 }

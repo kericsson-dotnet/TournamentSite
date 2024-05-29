@@ -14,7 +14,7 @@ builder.Services.AddDbContext<TournamentSiteContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.AddScoped<IRepository<Tournament>, TournamentRepository>();
 builder.Services.AddScoped<IRepository<Game>, GameRepository>();

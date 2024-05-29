@@ -12,11 +12,11 @@ public class UoW(TournamentSiteContext context) : IUoW
 
     public IRepository<Game> GameRepository => new GameRepository(_context);
 
-    public Task CompleteAsync()
+    public async Task CompleteAsync()
     {
         _context.ChangeTracker.DetectChanges();
         Console.WriteLine(_context.ChangeTracker.DebugView.LongView);
-        _context.SaveChangesAsync();
-        return Task.CompletedTask;
+
+        await _context.SaveChangesAsync();
     }
 }

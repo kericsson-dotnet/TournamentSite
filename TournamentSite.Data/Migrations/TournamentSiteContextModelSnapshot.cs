@@ -35,7 +35,8 @@ namespace TournamentSite.Data.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("TournamentId")
                         .HasColumnType("int");
@@ -60,7 +61,8 @@ namespace TournamentSite.Data.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("TournamentId");
 
