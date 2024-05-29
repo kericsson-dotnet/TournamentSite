@@ -14,6 +14,8 @@ public class UoW(TournamentSiteContext context) : IUoW
 
     public Task CompleteAsync()
     {
+        _context.ChangeTracker.DetectChanges();
+        Console.WriteLine(_context.ChangeTracker.DebugView.LongView);
         _context.SaveChangesAsync();
         return Task.CompletedTask;
     }

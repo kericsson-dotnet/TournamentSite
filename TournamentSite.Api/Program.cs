@@ -20,6 +20,8 @@ builder.Services.AddScoped<IRepository<Tournament>, TournamentRepository>();
 builder.Services.AddScoped<IRepository<Game>, GameRepository>();
 builder.Services.AddScoped<IUoW, UoW>();
 
+builder.Services.AddAutoMapper(typeof(TournamentSiteMappings));
+
 var app = builder.Build();
 await app.SeedDataAsync();
 // Configure the HTTP request pipeline.

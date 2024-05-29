@@ -1,5 +1,7 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TournamentSite.Core.Dto;
 using TournamentSite.Core.Entities;
 using TournamentSite.Core.Repositories;
 
@@ -7,21 +9,23 @@ namespace TournamentSite.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GameController(IUoW UoW) : ControllerBase
+    public class GameController(IUoW UoW, IMapper mapper) : ControllerBase
     {
         private readonly IUoW _UoW = UoW;
+        private readonly IMapper _mapper = mapper;
 
         // GET: api/Game
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGame()
+        public async Task<ActionResult<IEnumerable<GameDto>>> GetGame()
         {
             var games = await _UoW.GameRepository.GetAllAsync();
-            return Ok(games);
+            var gamesDto = _mapper.Map<IEnumerable<GameDto>>(games);
+            return Ok(gamesDto);
         }
 
         // GET: api/Game/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame(int id)
+        public async Task<ActionResult<GameDto>> GetGame(int id)
         {
             var game = await _UoW.GameRepository.GetAsync(id);
 
@@ -30,18 +34,26 @@ namespace TournamentSite.Api.Controllers
                 return NotFound();
             }
 
-            return game;
+            var gameDto = _mapper.Map<GameDto>(game);
+
+            return Ok(gameDto);
         }
 
         // PUT: api/Game/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGame(int id, Game game)
+        public async Task<IActionResult> PutGame(int id, GameDto gameDto)
         {
-            if (id != game.GameId)
+            // Get previous data and object
+            var game = await _UoW.GameRepository.GetAsync(id);
+
+            if (game == null)
             {
-                return BadRequest();
+                return NotFound();
             }
+
+            // Map new data to original entry
+            _mapper.Map(gameDto, game);
 
             _UoW.GameRepository.Update(game);
 
@@ -62,18 +74,21 @@ namespace TournamentSite.Api.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(game);
         }
 
         // POST: api/Game
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Game>> PostGame(Game game)
+        public async Task<ActionResult<GameDto>> PostGame(GameDto gameDto)
         {
+            var game = _mapper.Map<Game>(gameDto);
             _UoW.GameRepository.Add(game);
             await _UoW.CompleteAsync();
 
-            return CreatedAtAction("GetGame", new { id = game.GameId }, game);
+            var resultDto = _mapper.Map<GameDto>(game);
+
+            return CreatedAtAction("GetGame", new { id = game.GameId }, resultDto);
         }
 
         // DELETE: api/Game/5
@@ -89,7 +104,9 @@ namespace TournamentSite.Api.Controllers
             _UoW.GameRepository.Remove(game);
             await _UoW.CompleteAsync();
 
-            return NoContent();
+            var resultDto = _mapper.Map<GameDto>(game);
+
+            return Ok(resultDto);
         }
 
         private async Task<bool> GameExists(int id)
