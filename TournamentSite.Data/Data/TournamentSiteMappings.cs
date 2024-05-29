@@ -9,6 +9,7 @@ public class TournamentSiteMappings: Profile
     public TournamentSiteMappings()
     {
         CreateMap<Tournament, TournamentDto>();
+        CreateMap<Tournament, TournamentDtoNoGames>();
         CreateMap<TournamentDto, Tournament>();
         CreateMap<Game, GameDto>();
         CreateMap<GameDto, Game>();

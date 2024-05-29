@@ -4,7 +4,7 @@ namespace TournamentSite.Core.Repositories;
 
 public interface IUoW
 {
-    IRepository<Tournament> TournamentRepository { get; }
+    ITournamentRepository TournamentRepository { get; }
     IRepository<Game> GameRepository { get; }
 
     Task CompleteAsync();

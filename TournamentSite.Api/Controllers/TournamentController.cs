@@ -16,11 +16,20 @@ namespace TournamentSite.Api.Controllers
 
         // GET: api/Tournament
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournament()
+        public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournament([FromQuery] bool includeGames = false)
         {
-            var tournaments = await _UoW.TournamentRepository.GetAllAsync();
-            var tournamentsDto = _mapper.Map<IEnumerable<TournamentDto>>(tournaments);
-            return Ok(tournamentsDto);
+            var tournaments = await _UoW.TournamentRepository.GetAllAsync(includeGames);
+
+            if (includeGames)
+            {
+                return Ok(_mapper.Map<IEnumerable<TournamentDto>>(tournaments));
+            }
+            else
+            {
+
+                return Ok(_mapper.Map<IEnumerable<TournamentDtoNoGames>>(tournaments));
+            }
+
         }
 
         // GET: api/Tournament/5

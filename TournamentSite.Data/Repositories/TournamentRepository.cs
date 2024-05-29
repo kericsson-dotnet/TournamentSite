@@ -5,13 +5,18 @@ using TournamentSite.Data.Data;
 
 namespace TournamentSite.Data.Repositories;
 
-public class TournamentRepository(TournamentSiteContext context) : IRepository<Tournament>
+public class TournamentRepository(TournamentSiteContext context) : ITournamentRepository
 {
     private readonly TournamentSiteContext _context = context;
 
-    public async Task<IEnumerable<Tournament>> GetAllAsync()
+    public async Task<IEnumerable<Tournament>> GetAllAsync(bool includeGames)
     {
-        return await _context.Tournament.Include(t => t.Games).ToListAsync();
+        IQueryable<Tournament> query = _context.Tournament;
+        if (includeGames)
+        {
+            query = query.Include(t => t.Games);
+        }
+        return await query.ToListAsync();
     }
 
     public async Task<Tournament> GetAsync(int id)
@@ -21,10 +26,10 @@ public class TournamentRepository(TournamentSiteContext context) : IRepository<T
 
     public async Task<bool> AnyAsync(int id)
     {
-        return await _context.Tournament.AnyAsync(t => t.TournamentId == id); 
+        return await _context.Tournament.AnyAsync(t => t.TournamentId == id);
     }
 
-     public void Add(Tournament entity)
+    public void Add(Tournament entity)
     {
         _context.Tournament.Add(entity);
     }
@@ -38,5 +43,5 @@ public class TournamentRepository(TournamentSiteContext context) : IRepository<T
     {
         _context.Tournament.Remove(entity);
     }
- 
+
 }
